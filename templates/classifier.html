@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpamShield — Classifier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #ffffff;
+      --surface:   #f5f7fa;
+      --border:    #e1e7ef;
+      --accent:    #0091a8;
+      --accent-dim:#007a8c;
+      --danger:    #d63157;
+      --safe:      #00a35c;
+      --text:      #10151f;
+      --muted:     #5c6b85;
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-head);
+      min-height: 100vh;
+    }
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.05em; }
+    .nav-logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted); font-family: var(--font-head);
+      font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--border); }
+    .nav-links a.active { color: var(--accent); background: rgba(0,145,168,0.08); }
+    .page { padding-top: 60px; min-height: 100vh; }
+    /* ── CLASSIFIER ── */
+    #classifier { padding: 80px 1.5rem 5rem; }
+    .classifier-layout { max-width: 780px; margin: 0 auto; }
+    .page-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .page-subtitle { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.6; }
+    .input-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+    .input-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .email-body {
+      width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem;
+      color: var(--text); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.65;
+      resize: vertical; min-height: 180px; outline: none; transition: border-color 0.2s;
+    }
+    .email-body:focus { border-color: var(--accent-dim); }
+    .email-body::placeholder { color: var(--muted); }
+    .toolbar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+    .char-count { margin-left: auto; font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+    .btn-primary { background: var(--accent); color: #fff; border: none; padding: 0.75rem 1.75rem; border-radius: 8px; font-family: var(--font-head); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s, transform 0.15s; }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.75rem 1.75rem; border-radius: 8px; font-family: var(--font-head); font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .btn-secondary:hover { border-color: var(--muted); background: var(--surface); }
+    /* Result Panel */
+    .result-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; margin-top: 1.5rem; display: none; }
+    .result-panel.visible { display: block; animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .result-verdict { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .verdict-badge { padding: 0.4rem 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .verdict-badge.spam { background: rgba(214,49,87,0.1); color: var(--danger); border: 1px solid rgba(214,49,87,0.3); }
+    .verdict-badge.safe { background: rgba(0,163,92,0.1); color: var(--safe); border: 1px solid rgba(0,163,92,0.25); }
+    .verdict-conf { font-size: 0.82rem; color: var(--muted); }
+    .verdict-conf strong { color: var(--text); }
+    .confidence-bar-wrap { margin-bottom: 1.5rem; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-family: var(--font-mono); color: var(--muted); margin-bottom: 0.4rem; }
+    .bar-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+    .bar-fill.spam-fill { background: var(--danger); }
+    .bar-fill.safe-fill { background: var(--safe); }
+    .reasons-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .reasons-list li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+    .reasons-list li::before { content: '▸'; color: var(--accent-dim); flex-shrink: 0; margin-top: 0.05rem; }
+    .result-divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+    .result-section-title { font-size: 0.72rem; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+    /* Loading dots */
+    .loading-dots { display: inline-flex; gap: 4px; }
+    .loading-dots span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-5px); opacity: 1; } }
+    /* Sample pills */
+    .sample-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .pill { font-size: 0.72rem; font-family: var(--font-mono); padding: 0.3rem 0.75rem; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .pill:hover { border-color: var(--accent-dim); color: var(--text); }
+    .pill.spam-pill { border-color: rgba(214,49,87,0.25); color: rgba(214,49,87,0.8); }
+    .pill.spam-pill:hover { border-color: var(--danger); color: var(--danger); background: rgba(214,49,87,0.06); }
+    .pill.safe-pill { border-color: rgba(0,163,92,0.2); color: rgba(0,163,92,0.75); }
+    .pill.safe-pill:hover { border-color: var(--safe); color: var(--safe); background: rgba(0,163,92,0.06); }
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Spam<span>Shield</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="aboutus.html">About Us</a>
+    <a href="classifier.html" class="active">Classifier</a>
+  </div>
+</nav>
+<div id="classifier" class="page">
+  <div class="classifier-layout">
+    <p class="page-title">Text Classifier</p>
+    <p class="page-subtitle">Paste a Text Message below to check if it's spam. Nothing you enter is stored or used for training.</p>
+    <p style="font-size:0.72rem;font-family:var(--font-mono);color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem;">Try a sample</p>
+    <div class="sample-pills">
+      <span class="pill spam-pill" onclick="loadSample('spam1')">🚫 Prize winner</span>
+      <span class="pill spam-pill" onclick="loadSample('spam2')">🚫 Urgent account</span>
+      <span class="pill safe-pill" onclick="loadSample('safe1')">✅ Meeting invite</span>
+      <span class="pill safe-pill" onclick="loadSample('safe2')">✅ Order confirmation</span>
+    </div>
+    <div class="input-area">
+      <div class="input-label" style="margin-top:0.5rem;">Body</div>
+      <textarea class="email-body" id="emailBody" placeholder="Paste the Text body here…" oninput="updateCount()"></textarea>
+      <div class="toolbar">
+        <button class="btn-primary" onclick="classifyEmail()">Analyse Text Message</button>
+        <button class="btn-secondary" onclick="clearAll()">Clear</button>
+        <span class="char-count" id="charCount">0 chars</span>
+      </div>
+    </div>
+    <div class="result-panel" id="resultPanel"></div>
+  </div>
+</div>
+<script>
+  function updateCount() {
+    const len = document.getElementById('emailBody').value.length;
+    document.getElementById('charCount').textContent = len.toLocaleString() + ' chars';
+  }
+  function clearAll() {
+    document.getElementById('emailBody').value = '';
+    document.getElementById('charCount').textContent = '0 chars';
+    const panel = document.getElementById('resultPanel');
+    panel.classList.remove('visible');
+    panel.innerHTML = '';
+  }
+  const samples = {
+    spam1: "Congratulations! You've been randomly selected as this week's lucky winner!\n\nYou are entitled to a $500 Walmart Gift Card. To claim your prize, click the link below within the next 24 HOURS or your reward will expire.\n\n👉 CLAIM NOW: http://promo-gifts-winners-click.ru/claim\n\nThis is a LIMITED TIME OFFER. Act fast before someone else takes your spot!\n\nDo not ignore this message. Your prize ID: #WN-881902-X\n\nUnsubscribe | Privacy Policy",
+    spam2: "Dear Valued Customer,\n\nWe have detected unusual activity on your account. Your online banking access has been TEMPORARILY SUSPENDED for your security.\n\nTo restore access, please verify your identity within 12 hours:\n\n🔗 http://secure-bank-verify.net/login\n\nYou will need to provide:\n- Full name and date of birth\n- Account number and sort code\n- Online banking password\n\nFailure to act will result in permanent account closure.\n\nBank Security Team",
+    safe1: "Hi team,\n\nJust confirming our Q3 planning session for Thursday 3 July at 2:00 pm in the main boardroom (Room 4B).\n\nAgenda:\n1. Review H1 performance metrics\n2. Set OKRs for Q3\n3. Resource allocation discussion\n\nPlease bring your team updates. I'll circulate the full deck tomorrow.\n\nLet me know if you can't make it.\n\nBest,\nSarah",
+    safe2: "Hi there,\n\nGreat news — your order is on its way!\n\nOrder #ORD-20482\nEstimated delivery: Wednesday 2 July\nCarrier: Royal Mail Tracked 48\nTracking: RM492810384GB\n\nItems shipped:\n- Wireless keyboard (x1)\n- USB-C hub (x1)\n\nYou can track your parcel at royalmail.com/track-your-item.\n\nThanks for shopping with us.\nThe TechStore team"
+  };
+  function loadSample(key) {
+    document.getElementById('emailBody').value = samples[key];
+    updateCount();
+    const panel = document.getElementById('resultPanel');
+    panel.classList.remove('visible');
+    panel.innerHTML = '';
+  }
+  function classifyEmail() {
+    const body = document.getElementById('emailBody').value.trim();
+    if (!body) {
+      alert('Please enter a body to classify.');
+      return;
+    }
+    const panel = document.getElementById('resultPanel');
+    panel.className = 'result-panel visible';
+    panel.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0.75rem;color:var(--muted);font-size:0.85rem;">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        Analysing text…
+      </div>`;
+    setTimeout(() => {
+      const result = heuristicClassify(body);
+      renderResult(panel, result);
+    }, 900);
+  }
+  function heuristicClassify(body) {
+    const text = body.toLowerCase();
+    const spamSignals = [
+      { pattern: /urgent|immediately|act now|expires in|limited time/i, label: 'Urgency language detected', weight: 2 },
+      { pattern: /click here|click now|claim now|verify now|click the link/i, label: 'Aggressive call-to-action', weight: 2 },
+      { pattern: /\$\d+|\d+%\s*off|free gift|prize|winner|reward|gift card/i, label: 'Prize or reward language', weight: 3 },
+      { pattern: /password|account number|sort code|credit card|ssn|social security/i, label: 'Credential harvesting signals', weight: 4 },
+      { pattern: /http:\/\/|\.ru\/|\.xyz\/|\.top\/|bit\.ly\/|tinyurl/i, label: 'Suspicious link pattern', weight: 3 },
+      { pattern: /suspended|compromised|blocked|deactivated|verify your (account|identity)/i, label: 'Account threat language', weight: 3 },
+      { pattern: /congratulations|you('ve| have) been selected|randomly selected/i, label: 'Lottery / prize framing', weight: 2 },
+      { pattern: /unsubscribe|do not reply/i, label: 'Bulk-mail footer signals', weight: 1 },
+    ];
+    const safeSignals = [
+      { pattern: /hi team|hi there|dear |best,|thanks,|kind regards/i, label: 'Personal greeting present', weight: 2 },
+      { pattern: /meeting|agenda|discussion|review|planning/i, label: 'Business context detected', weight: 1 },
+      { pattern: /order #|tracking|dispatched|shipped|delivery/i, label: 'Legitimate transactional language', weight: 2 },
+    ];
+    let spamScore = 0, safeScore = 2;
+    const reasons = [];
+    for (const s of spamSignals) {
+      if (s.pattern.test(text)) { spamScore += s.weight; reasons.push(s.label); }
+    }
+    for (const s of safeSignals) {
+      if (s.pattern.test(text)) safeScore += s.weight;
+    }
+    const total  = spamScore + safeScore;
+    const spamPct = Math.round((spamScore / total) * 100);
+    const isSpam  = spamPct >= 50;
+    return {
+      isSpam, spamPct, safePct: 100 - spamPct, confidence: isSpam ? spamPct : 100 - spamPct,
+      reasons: reasons.length ? reasons : ['No strong spam signals found']
+    };
+  }
+  function renderResult(panel, r) {
+    panel.innerHTML = `
+      <div class="result-verdict">
+        <div class="verdict-badge ${r.isSpam ? 'spam' : 'safe'}">${r.isSpam ? '⛔ Spam' : '✅ Legitimate'}</div>
+        <div class="verdict-conf">Confidence: <strong>${r.confidence}%</strong></div>
+      </div>
+      <div class="confidence-bar-wrap">
+        <div class="bar-label"><span>Spam probability</span><span>${r.spamPct}%</span></div>
+        <div class="bar-track"><div class="bar-fill spam-fill" id="spamBar"></div></div>
+      </div>
+      <div class="confidence-bar-wrap">
+        <div class="bar-label"><span>Legitimate probability</span><span>${r.safePct}%</span></div>
+        <div class="bar-track"><div class="bar-fill safe-fill" id="safeBar"></div></div>
+      </div>
+      <hr class="result-divider"/>
+      <p class="result-section-title">Contributing signals</p>
+      <ul class="reasons-list">
+        ${r.reasons.map(re => `<li>${re}</li>`).join('')}
+      </ul>
+    `;
+    requestAnimationFrame(() => {
+      document.getElementById('spamBar').style.width = r.spamPct + '%';
+      document.getElementById('safeBar').style.width = r.safePct + '%';
+    });
+  }
+</script>
+</body>
+</html>

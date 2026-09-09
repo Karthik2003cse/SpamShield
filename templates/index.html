@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>SpamShield — Home</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+
+      --bg:        #ffffff;
+
+      --surface:   #f5f7fa;
+
+      --border:    #e1e7ef;
+
+      --accent:    #0091a8;
+
+      --accent-dim:#007a8c;
+
+      --danger:    #d63157;
+
+      --safe:      #00a35c;
+
+      --text:      #10151f;
+
+      --muted:     #5c6b85;
+
+      --font-head: 'Space Grotesk', sans-serif;
+
+      --font-mono: 'Space Mono', monospace;
+
+    }
+
+    body {
+
+      background: var(--bg);
+
+      color: var(--text);
+
+      font-family: var(--font-head);
+
+      min-height: 100vh;
+
+    }
+
+    /* ── NAV ── */
+
+    nav {
+
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+
+      display: flex; align-items: center; justify-content: space-between;
+
+      padding: 0 2rem;
+
+      height: 60px;
+
+      background: rgba(255,255,255,0.85);
+
+      backdrop-filter: blur(12px);
+
+      border-bottom: 1px solid var(--border);
+
+    }
+
+    .nav-logo {
+
+      font-family: var(--font-mono);
+
+      font-size: 1.1rem;
+
+      color: var(--accent);
+
+      letter-spacing: 0.05em;
+
+    }
+
+    .nav-logo span { color: var(--text); }
+
+    .nav-links { display: flex; gap: 0.25rem; }
+
+    .nav-links a {
+
+      text-decoration: none;
+
+      color: var(--muted);
+
+      font-family: var(--font-head);
+
+      font-size: 0.875rem;
+
+      font-weight: 500;
+
+      padding: 0.4rem 0.9rem;
+
+      border-radius: 6px;
+
+      transition: color 0.2s, background 0.2s;
+
+    }
+
+    .nav-links a:hover { color: var(--text); background: var(--border); }
+
+    .nav-links a.active { color: var(--accent); background: rgba(0,145,168,0.08); }
+
+    .page { padding-top: 60px; min-height: 100vh; }
+
+    /* ── HOME ── */
+
+    #home {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      flex-direction: column;
+
+      text-align: center;
+
+      padding: 60px 1.5rem 4rem;
+
+      position: relative;
+
+      overflow: hidden;
+
+    }
+
+    .grid-bg {
+
+      position: absolute; inset: 0; z-index: 0;
+
+      background-image:
+
+        linear-gradient(var(--border) 1px, transparent 1px),
+
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+
+      background-size: 40px 40px;
+
+      opacity: 0.6;
+
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%);
+
+    }
+
+    .home-inner { position: relative; z-index: 1; max-width: 680px; }
+
+    .eyebrow {
+
+      display: inline-flex; align-items: center; gap: 0.5rem;
+
+      font-family: var(--font-mono);
+
+      font-size: 0.72rem;
+
+      letter-spacing: 0.15em;
+
+      text-transform: uppercase;
+
+      color: var(--accent);
+
+      background: rgba(0,145,168,0.08);
+
+      border: 1px solid rgba(0,145,168,0.25);
+
+      padding: 0.35rem 0.85rem;
+
+      border-radius: 100px;
+
+      margin-bottom: 2rem;
+
+    }
+
+    .eyebrow::before {
+
+      content: '';
+
+      width: 6px; height: 6px;
+
+      border-radius: 50%;
+
+      background: var(--accent);
+
+      animation: pulse 2s infinite;
+
+    }
+
+    @keyframes pulse {
+
+      0%, 100% { opacity: 1; transform: scale(1); }
+
+      50%       { opacity: 0.4; transform: scale(0.8); }
+
+    }
+
+    h1 {
+
+      font-size: clamp(2.4rem, 6vw, 4rem);
+
+      font-weight: 700;
+
+      line-height: 1.1;
+
+      letter-spacing: -0.03em;
+
+      margin-bottom: 1.25rem;
+
+    }
+
+    h1 em { font-style: normal; color: var(--accent); position: relative; }
+
+    .sub {
+
+      font-size: 1.05rem;
+
+      color: var(--muted);
+
+      line-height: 1.7;
+
+      max-width: 500px;
+
+      margin: 0 auto 2.5rem;
+
+    }
+
+    .cta-row { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+
+      background: var(--accent);
+
+      color: #fff;
+
+      border: none;
+
+      padding: 0.75rem 1.75rem;
+
+      border-radius: 8px;
+
+      font-family: var(--font-head);
+
+      font-weight: 600;
+
+      font-size: 0.9rem;
+
+      cursor: pointer;
+
+      transition: opacity 0.2s, transform 0.15s;
+
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-secondary {
+
+      background: transparent;
+
+      color: var(--text);
+
+      border: 1px solid var(--border);
+
+      padding: 0.75rem 1.75rem;
+
+      border-radius: 8px;
+
+      font-family: var(--font-head);
+
+      font-weight: 500;
+
+      font-size: 0.9rem;
+
+      cursor: pointer;
+
+      transition: border-color 0.2s, background 0.2s;
+
+    }
+
+    .btn-secondary:hover { border-color: var(--muted); background: var(--surface); }
+
+    .stats-row {
+
+      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+
+      margin-top: 4rem;
+
+      padding-top: 3rem;
+
+      border-top: 1px solid var(--border);
+
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-num {
+
+      font-family: var(--font-mono);
+
+      font-size: 2rem;
+
+      font-weight: 700;
+
+      color: var(--accent);
+
+    }
+
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.05em; }
+
+  </style>
+
+</head>
+
+<body>
+
+<nav>
+
+  <div class="nav-logo">Spam<span>Shield</span></div>
+
+  <div class="nav-links">
+
+    <a href="/" class="active">Home</a>
+
+    <a href="/about">About</a>
+
+    <a href="/aboutus">About Us</a>
+
+    <a href="/classifier">Classifier</a>
+
+  </div>
+
+</nav>
+
+<div id="home" class="page">
+
+  <div class="grid-bg"></div>
+
+  <div class="home-inner">
+
+    <div class="eyebrow">AI-Powered Detection</div>
+
+    <h1>Stop spam before it <em>reaches you</em></h1>
+
+    <p class="sub">
+
+      SpamShield uses machine learning to instantly classify text messages as spam or legitimate —
+
+      protecting your inbox with precision you can trust.
+
+    </p>
+
+    <div class="cta-row">
+
+      <button class="btn-primary" onclick="window.location.href='/classifier'">Analyse a Text Message</button>
+
+      <button class="btn-secondary" onclick="window.location.href='/about'">How it works</button>
+
+    </div>
+
+    <div class="stats-row">
+
+      <div class="stat-item">
+
+        <div class="stat-num">99.1%</div>
+
+        <div class="stat-label">Accuracy</div>
+
+      </div>
+
+      <div class="stat-item">
+
+        <div class="stat-num"><200ms</div>
+
+        <div class="stat-label">Response time</div>
+
+      </div>
+
+      <div class="stat-item">
+
+        <div class="stat-num">0.9%</div>
+
+        <div class="stat-label">False positive rate</div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

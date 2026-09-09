@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>SpamShield — About Us</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+
+      --bg:        #ffffff;
+
+      --surface:   #f5f7fa;
+
+      --border:    #e1e7ef;
+
+      --accent:    #0091a8;
+
+      --accent-dim:#007a8c;
+
+      --text:      #10151f;
+
+      --muted:     #5c6b85;
+
+      --font-head: 'Space Grotesk', sans-serif;
+
+      --font-mono: 'Space Mono', monospace;
+
+    }
+
+    body {
+
+      background: var(--bg);
+
+      color: var(--text);
+
+      font-family: var(--font-head);
+
+      min-height: 100vh;
+
+    }
+
+    /* ── NAV ── */
+
+    nav {
+
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+
+      display: flex; align-items: center; justify-content: space-between;
+
+      padding: 0 2rem; height: 60px;
+
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+
+      border-bottom: 1px solid var(--border);
+
+    }
+
+    .nav-logo { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.05em; }
+
+    .nav-logo span { color: var(--text); }
+
+    .nav-links { display: flex; gap: 0.25rem; }
+
+    .nav-links a {
+
+      text-decoration: none; color: var(--muted); font-family: var(--font-head);
+
+      font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px;
+
+      transition: color 0.2s, background 0.2s;
+
+    }
+
+    .nav-links a:hover { color: var(--text); background: var(--border); }
+
+    .nav-links a.active { color: var(--accent); background: rgba(0,145,168,0.08); }
+
+    .page { padding-top: 60px; min-height: 100vh; }
+
+    /* ── ABOUT US ── */
+
+    #aboutus { padding: 80px 1.5rem 5rem; }
+
+    .section-inner { max-width: 780px; margin: 0 auto; }
+
+    .page-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+
+    .page-subtitle { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.6; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+
+    .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; transition: border-color 0.2s; }
+
+    .team-card:hover { border-color: var(--accent-dim); }
+
+    .avatar {
+
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;
+
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+
+      background: linear-gradient(135deg, var(--border), var(--accent-dim)); border: 2px solid var(--border);
+
+    }
+
+    .team-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+
+    .team-card .role { font-size: 0.78rem; color: var(--accent); font-family: var(--font-mono); }
+
+    .team-card .bio { font-size: 0.8rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.5; }
+
+    .mission-block { background: linear-gradient(135deg, rgba(0,145,168,0.06), rgba(0,145,168,0.02)); border: 1px solid rgba(0,145,168,0.2); border-radius: 14px; padding: 2.5rem; margin-bottom: 2.5rem; }
+
+    .mission-block h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent); }
+
+    .mission-block p { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+
+  </style>
+
+</head>
+
+<body>
+
+<nav>
+
+  <div class="nav-logo">Spam<span>Shield</span></div>
+
+  <div class="nav-links">
+
+    <a href="/">Home</a>
+
+    <a href="/about">About</a>
+
+    <a href="/aboutus" class="active">About Us</a>
+
+    <a href="/classifier">Classifier</a>
+
+  </div>
+
+</nav>
+
+<div id="aboutus" class="page">
+
+  <div class="section-inner">
+
+    <p class="page-title">About us</p>
+
+    <p class="page-subtitle">We're a small team that got tired of spam and decided to do something about it.</p>
+
+    <div class="mission-block">
+
+      <h3>Our mission</h3>
+
+      <p>Text Messages were built for communication, not exploitation. SpamShield exists to restore the inbox as a trusted space — giving individuals and teams a reliable, transparent tool to tell signal from noise.</p>
+
+    </div>
+
+    <div class="team-grid">
+
+      <div class="team-card">
+
+        <div class="avatar">👩‍💻</div>
+
+        <h4>Karthikeyan.C.R</h4>
+
+        <div class="role">ML Engineer</div>
+
+        <p class="bio">Designed and trained the core classification model. Previously worked on content moderation at scale.</p>
+
+      </div>
+
+      <div class="team-card">
+
+        <div class="avatar">👨‍🎨</div>
+
+        <h4>Bharath Kumar.R</h4>
+
+        <div class="role">Product & Design</div>
+
+        <p class="bio">Translates complex classifier output into interfaces that actually make sense to people.</p>
+
+      </div>
+
+      <div class="team-card">
+
+        <div class="avatar">👩‍🔬</div>
+
+        <h4>Vergin Jose.R</h4>
+
+        <div class="role">Data Science</div>
+
+        <p class="bio">Maintains training pipelines and curates the labeled dataset that keeps accuracy high.</p>
+
+      </div>
+
+      <div class="team-card">
+
+        <div class="avatar">👨‍💼</div>
+
+        <h4>Rahul Ratheesh.R</h4>
+
+        <div class="role">Backend & Infra</div>
+
+        <p class="bio">Keeps inference fast, scalable, and private — no email content is ever stored or logged.</p>
+
+      </div>
+
+      <div class="team-card">
+
+        <div class="avatar">👨‍💼</div>
+
+        <h4>Irfan.A</h4>
+
+        <div class="role">Testing & Quality Assurance</div>
+
+        <p class="bio">Tested and validated the spam classifier, fixed bugs, and ensured reliable Flask application performance before deployment.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>SpamShield — About</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+
+      --bg:        #ffffff;
+
+      --surface:   #f5f7fa;
+
+      --border:    #e1e7ef;
+
+      --accent:    #0091a8;
+
+      --text:      #10151f;
+
+      --muted:     #5c6b85;
+
+      --font-head: 'Space Grotesk', sans-serif;
+
+      --font-mono: 'Space Mono', monospace;
+
+    }
+
+    body {
+
+      background: var(--bg);
+
+      color: var(--text);
+
+      font-family: var(--font-head);
+
+      min-height: 100vh;
+
+    }
+
+    /* ── NAV ── */
+
+    nav {
+
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+
+      display: flex; align-items: center; justify-content: space-between;
+
+      padding: 0 2rem; height: 60px;
+
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+
+      border-bottom: 1px solid var(--border);
+
+    }
+
+    .nav-logo { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.05em; }
+
+    .nav-logo span { color: var(--text); }
+
+    .nav-links { display: flex; gap: 0.25rem; }
+
+    .nav-links a {
+
+      text-decoration: none; color: var(--muted); font-family: var(--font-head);
+
+      font-size: 0.875rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px;
+
+      transition: color 0.2s, background 0.2s;
+
+    }
+
+    .nav-links a:hover { color: var(--text); background: var(--border); }
+
+    .nav-links a.active { color: var(--accent); background: rgba(0,145,168,0.08); }
+
+    .page { padding-top: 60px; min-height: 100vh; }
+
+    /* ── ABOUT ── */
+
+    #about { padding: 80px 1.5rem 5rem; }
+
+    .section-inner { max-width: 780px; margin: 0 auto; }
+
+    .page-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+
+    .page-subtitle { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.6; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; margin-bottom: 1.25rem; }
+
+    .card-icon {
+
+      width: 42px; height: 42px; border-radius: 10px; background: rgba(0,145,168,0.1);
+
+      border: 1px solid rgba(0,145,168,0.25); display: flex; align-items: center; justify-content: center;
+
+      font-size: 1.2rem; margin-bottom: 1rem;
+
+    }
+
+    .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+    .card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    @media (max-width: 560px) { .feature-grid { grid-template-columns: 1fr; } }
+
+  </style>
+
+</head>
+
+<body>
+
+<nav>
+
+  <div class="nav-logo">Spam<span>Shield</span></div>
+
+  <div class="nav-links">
+
+    <a href="/">Home</a>
+
+    <a href="/about" class="active">About</a>
+
+    <a href="/aboutus">About Us</a>
+
+    <a href="/classifier">Classifier</a>
+
+  </div>
+
+</nav>
+
+<div id="about" class="page">
+
+  <div class="section-inner">
+
+    <p class="page-title">How SpamShield works</p>
+
+    <p class="page-subtitle">A multi-signal classifier that goes beyond keyword matching to understand text message intent.</p>
+
+    <div class="feature-grid">
+
+      <div class="card">
+
+        <div class="card-icon">📝</div>
+
+        <h3>Text Analysis</h3>
+
+        <p>Semantic parsing of the subject and body to detect deceptive language patterns, urgency signals, and phishing templates.</p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">🔗</div>
+
+        <h3>Link Intelligence</h3>
+
+        <p>Embedded URL extraction and reputation scoring against known malicious domains and redirect chains.</p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">🧠</div>
+
+        <h3>ML Classification</h3>
+
+        <p>A gradient-boosted model trained on 2M+ labeled emails, updated monthly to keep up with evolving spam tactics.</p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">📊</div>
+
+        <h3>Confidence Scoring</h3>
+
+        <p>Every verdict comes with a calibrated probability score and a breakdown of the contributing signals.</p>
+
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:1.25rem;">
+
+      <h3>Detection categories</h3>
+
+      <p style="margin-top:0.5rem;">SpamShield identifies: promotional spam · phishing attempts · advance-fee fraud · malware lures · adult content · lottery scams · credential harvesting · and legitimate transactional email.</p>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>
